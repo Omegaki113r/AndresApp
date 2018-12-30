@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class HomeScreen extends AppCompatActivity {
 
@@ -21,6 +22,7 @@ public class HomeScreen extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
 
         webView = (WebView) findViewById(R.id.webView);
+
         pageLoad("https://www.andrejarrell.com",webView);
 
 
@@ -56,10 +58,10 @@ public class HomeScreen extends AppCompatActivity {
 
 
     private void pageLoad(String url,WebView web){
-        WebSettings webSettings=webView.getSettings();
+        WebSettings webSettings=web.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webView.loadUrl(url);
-        webView.setWebViewClient(new WebViewClient());
+        web.loadUrl(url);
+        web.setWebViewClient(new WebViewClient());
     }
 
     @Override
@@ -74,7 +76,24 @@ public class HomeScreen extends AppCompatActivity {
     @Override
     public void onPause(){
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        webView.clearHistory();
+        webView.clearCache(true);
+        webView.loadUrl("about:blank");
         webView.onPause();
+        webView.removeAllViews();
+        webView.destroyDrawingCache();
+        webView.pauseTimers();
+        webView.destroy();
+        webView=null;
+    }
+
+    void showMessage(String message){
+        Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
     }
 
 }
