@@ -1,11 +1,16 @@
 package com.omegaki113r.pksoftwaresolutions.andresapp;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -25,6 +30,23 @@ public class HomeScreen extends AppCompatActivity {
 
         pageLoad("https://www.andrejarrell.com",webView);
 
+        WebSettings webSettings=webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if( URLUtil.isNetworkUrl(url) ) {
+                    return false;
+                }
+                if (appInstalledOrNot(url)) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity( intent );
+                } else {
+                    Snackbar.make(findViewById(R.id.home_screen),"App is Not installed...",Snackbar.LENGTH_LONG).show();
+                }
+                return  true;
+            }
+        });
 
         tabLayout=findViewById(R.id.tb_layout);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -56,12 +78,22 @@ public class HomeScreen extends AppCompatActivity {
 
     }
 
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+
+        return false;
+
+    }
+
 
     private void pageLoad(String url,WebView web){
-        WebSettings webSettings=web.getSettings();
-        webSettings.setJavaScriptEnabled(true);
         web.loadUrl(url);
-        web.setWebViewClient(new WebViewClient());
+        //web.setWebViewClient(new WebViewClient());
     }
 
     @Override
