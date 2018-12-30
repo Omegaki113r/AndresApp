@@ -2,6 +2,7 @@ package com.omegaki113r.pksoftwaresolutions.andresapp;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,42 +13,44 @@ import android.webkit.WebViewClient;
 public class HomeScreen extends AppCompatActivity {
 
     private WebView webView;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.terraria:
-                    pageLoad("http://blog.andrejarrell.com",webView);
-                    return true;
-                case R.id.dontstarve:
-                    pageLoad("https://www.andrejarrell.com",webView);
-                    return true;
-                case R.id.minecraft:
-                    pageLoad("https://guides.andrejarrell.com",webView);
-                    return true;
-            }
-            return false;
-        }
-    };
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-/*
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-6784086459955376~4905536420");
-        AdView adView=findViewById(R.id.adView);
-        AdRequest adRequest=new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-*/
+
         webView = (WebView) findViewById(R.id.webView);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         pageLoad("https://www.andrejarrell.com",webView);
 
+
+        tabLayout=findViewById(R.id.tb_layout);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 1:
+                        pageLoad("https://andrejarrell.tumblr.com",webView);
+                        break;
+                    case 0:
+                        pageLoad("https://www.andrejarrell.com",webView);
+                        break;
+                    case 2:
+                        pageLoad("https://guides.andrejarrell.com",webView);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
     }
 

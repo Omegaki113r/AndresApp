@@ -3,6 +3,7 @@
 
     <item
         android:id="@+id/dontstarve"
+        android:checked="true"
         android:title="Home" />
 
     <item
